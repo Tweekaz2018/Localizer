@@ -22,8 +22,11 @@ namespace WebApplication2
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddLocalizationServices();
-            services.AddMvc().AddViewLocalization()
-                .AddDataAnnotationsLocalization();
+            services.AddMvc()
+                .AddViewLocalization()
+                .AddDataAnnotationsLocalization(x =>
+                    x.DataAnnotationLocalizerProvider = (y, factory) => factory.Create(typeof(IStringLocalizer))
+                );
         }
     }
 }
