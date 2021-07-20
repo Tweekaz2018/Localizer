@@ -4,6 +4,7 @@ using Owin;
 using System.Web.Mvc;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Localization;
+using System.Linq;
 
 [assembly: OwinStartup(typeof(WebApplication2.Startup))]
 namespace WebApplication2
@@ -21,12 +22,16 @@ namespace WebApplication2
 
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddLocalizationServices();
             services.AddMvc()
                 .AddViewLocalization()
                 .AddDataAnnotationsLocalization(x =>
                     x.DataAnnotationLocalizerProvider = (y, factory) => factory.Create(typeof(IStringLocalizer))
                 );
+            var stringLocalizer = services.FirstOrDefault(x => x.ServiceType == typeof(IStringLocalizer));
+            var stringLocalizerFactory = services.FirstOrDefault(x => x.ServiceType == typeof(IStringLocalizerFactory));
+            services.Remove(stringLocalizer);
+            services.Remove(stringLocalizerFactory);
+            services.AddLocalizationServices();
         }
     }
 }

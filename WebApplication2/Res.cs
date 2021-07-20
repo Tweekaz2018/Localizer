@@ -21,7 +21,18 @@ namespace WebApplication2
             {"Password", "Пароль" }
         };
 
-        public LocalizedString this[string name] => new LocalizedString(name, _res[name]);
+        public LocalizedString this[string name]
+        {
+            get
+            {
+                /*
+                var culture = Thread.CurrentThread.CurrentCulture.ThreeLetterISOLanguageName;
+                _res[name].Where(x => x.Language == culture);
+                 */
+
+                return new LocalizedString(name, _res[name]);
+            }
+        }
 
         public LocalizedString this[string name, params object[] arguments] => throw new NotImplementedException();
 
