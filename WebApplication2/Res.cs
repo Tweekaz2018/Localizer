@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using System.Threading;
 using System.Web;
 
 namespace WebApplication2
@@ -11,26 +12,44 @@ namespace WebApplication2
     {
         public static IStringLocalizer Localizer { get; set; }
     }
+    public class Resource
+    {
+        public string Code { get; set; }
+        public string Value { get; set; }
 
+        public Resource(string code, string value)
+        {
+            Code = code;
+            Value = value;
+        }
+    }
     public class Localizer : IStringLocalizer
     {
-        private Dictionary<string, string> _res = new Dictionary<string, string>()
+        private const string defaultCulture = "ru";
+
+        private Dictionary<string, List<Resource>> _res = new Dictionary<string, List<Resource>> ()
         {
-            {"Required", "Требуется" },
-            {"Login" , "Логин"},
-            {"Password", "Пароль" }
+            {"Required", new List<Resource>(){new Resource("ru","Требуется"), new Resource("en", "Required") } },
+            {"Login" , new List<Resource>(){new Resource("ru","Логин"), new Resource("en", "Login") } },
+            {"Password", new List<Resource>(){new Resource("ru","Пароль"), new Resource("en", "Password") } },
         };
 
         public LocalizedString this[string name]
         {
             get
             {
-                /*
                 var culture = Thread.CurrentThread.CurrentCulture.ThreeLetterISOLanguageName;
-                _res[name].Where(x => x.Language == culture);
-                 */
+                var hasRes = _res.TryGetValue(name, out var listOfResources);
+                if (hasRes)
+                {
+                    var resource = _res[name].FirstOrDefault(x => x.Code == culture);
+                    if (resource == default)
+                        resource = _res[name].FirstOrDefault(x => x.Code == defaultCulture);
 
-                return new LocalizedString(name, _res[name]);
+                    return new LocalizedString(name, resource.Value);
+                }
+                else
+                    return new LocalizedString(name, string.Empty);
             }
         }
 
