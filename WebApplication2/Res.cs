@@ -25,13 +25,14 @@ namespace WebApplication2
     }
     public class Localizer : IStringLocalizer
     {
-        private const string defaultCulture = "ru";
+        private const string defaultCulture = "en";
 
         private Dictionary<string, List<Resource>> _res = new Dictionary<string, List<Resource>> ()
         {
-            {"Required", new List<Resource>(){new Resource("ru","Требуется"), new Resource("en", "Required") } },
-            {"Login" , new List<Resource>(){new Resource("ru","Логин"), new Resource("en", "Login") } },
-            {"Password", new List<Resource>(){new Resource("ru","Пароль"), new Resource("en", "Password") } },
+            {"Required", new List<Resource>(){new Resource("rus","Требуется"), new Resource("eng", "Required") } },
+            {"Login" , new List<Resource>(){new Resource("rus","Логин"), new Resource("eng", "Login") } },
+            {"Password", new List<Resource>(){new Resource("rus","Пароль"), new Resource("eng", "Password") } },
+            {"Not valid", new List<Resource>(){new Resource("rus","Не подходит"), new Resource("eng", "Not valid") } },
         };
 
         public LocalizedString this[string name]
@@ -53,7 +54,7 @@ namespace WebApplication2
             }
         }
 
-        public LocalizedString this[string name, params object[] arguments] => throw new NotImplementedException();
+        public LocalizedString this[string name, params object[] arguments] => this[name];
 
         public IEnumerable<LocalizedString> GetAllStrings(bool includeParentCultures)
         {
@@ -64,6 +65,24 @@ namespace WebApplication2
         {
             throw new NotImplementedException();
         }   
+    }
+
+    public class StringLocalizerFactory : IStringLocalizerFactory
+    {
+        public IStringLocalizer Create(Type resourceSource)
+        {
+            return CreateStringLocalizer();
+        }
+
+        public IStringLocalizer Create(string baseName, string location)
+        {
+            return CreateStringLocalizer();
+        }
+
+        private IStringLocalizer CreateStringLocalizer()
+        {
+            return new Localizer();
+        }
     }
 
     public class FakeStringLocalizerFactory : IStringLocalizerFactory

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.Extensions.Localization;
+using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
@@ -11,12 +12,17 @@ namespace WebApplication2.Controllers
 {
     public class HomeController : Controller
     {
+        private IStringLocalizer _localizer;
+        public HomeController(IStringLocalizer localizer)
+        {
+            _localizer = localizer;
+        }
         public ActionResult Index()
         {
             //Для тестирования. Просто нужно будет один закомментить
             //А второй разкоментиться. И можно теститься ;) 
             //Thread.CurrentThread.CurrentCulture = new CultureInfo("en");
-            Thread.CurrentThread.CurrentCulture = new CultureInfo("ru");
+           //Thread.CurrentThread.CurrentCulture = new CultureInfo("ru");
 
 
             return View(new LoginPageModel());
